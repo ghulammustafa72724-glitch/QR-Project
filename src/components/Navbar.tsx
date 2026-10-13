@@ -49,6 +49,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
 
   const handleLogout = () => {
     logout();
+    sessionStorage.removeItem('currentView');
     onNavigate('login');
     setMobileMenuOpen(false);
   };

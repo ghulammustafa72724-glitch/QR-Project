@@ -1,15 +1,9 @@
 import React from 'react';
 import {
   CheckCircle2,
-  Clock,
-  Store,
-  MapPin,
   UtensilsCrossed,
-  ArrowRight,
-  Home,
   MessageSquare,
   User,
-  ShoppingBag,
 } from 'lucide-react';
 import { Order } from '../types';
 import { OrderStatusBadge } from './OrderStatusBadge';
@@ -160,7 +154,7 @@ export const OrderConfirmationView: React.FC<OrderConfirmationViewProps> = ({
           </div>
 
           {/* Action Buttons */}
-          <div className="pt-2 space-y-2.5">
+          <div className="pt-2">
             <button
               type="button"
               onClick={onBackToMenu}
@@ -168,15 +162,6 @@ export const OrderConfirmationView: React.FC<OrderConfirmationViewProps> = ({
             >
               <UtensilsCrossed className="w-4 h-4" />
               <span>Order More Items for Table {order.table_number || order.table_number_snapshot}</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={onNavigateHome}
-              className="w-full py-2.5 px-4 bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold rounded-2xl text-xs transition-colors flex items-center justify-center gap-2"
-            >
-              <Home className="w-3.5 h-3.5" />
-              <span>Return to Main System</span>
             </button>
           </div>
         </div>

@@ -18,7 +18,14 @@ import { Loader2 } from 'lucide-react';
 
 function AppContent() {
   const { user, isLoading } = useAuth();
-  const [currentView, setCurrentView] = useState<CurrentView>('home');
+  const [currentView, setCurrentView] = useState<CurrentView>(
+    () => (sessionStorage.getItem('currentView') as CurrentView) || 'home'
+  );
+
+  const navigateTo = (view: CurrentView) => {
+    sessionStorage.setItem('currentView', view);
+    setCurrentView(view);
+  };
   const [publicRoute, setPublicRoute] = useState<{
     restaurantId: string;
     tableId: string;
@@ -72,7 +79,7 @@ function AppContent() {
       currentView === 'staff';
 
     if (!isLoading && !user && isProtected && !publicRoute) {
-      setCurrentView('login');
+      navigateTo('login');
       return;
     }
 
@@ -81,12 +88,12 @@ function AppContent() {
       if (user.role === 'waiter') {
         const waiterAllowed = currentView === 'waiter' || currentView === 'orders';
         if (!waiterAllowed && isProtected) {
-          setCurrentView('waiter');
+          navigateTo('waiter');
         }
       } else if (user.role === 'kitchen_staff') {
         const kitchenAllowed = currentView === 'kitchen' || currentView === 'orders';
         if (!kitchenAllowed && isProtected) {
-          setCurrentView('kitchen');
+          navigateTo('kitchen');
         }
       } else if (user.role === 'restaurant_owner') {
         // Owner has access to all views
@@ -95,10 +102,9 @@ function AppContent() {
   }, [user, isLoading, currentView, publicRoute]);
 
   const handleNavigateHome = () => {
-    // Clear URL to root
     window.history.pushState({}, '', '/');
     setPublicRoute(null);
-    setCurrentView('home');
+    navigateTo('home');
   };
 
   // If scanning a QR code publicly, render PublicTableScanView without requiring login!
@@ -123,66 +129,66 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-stone-50 text-stone-800 flex flex-col font-sans antialiased selection:bg-amber-100 selection:text-amber-900">
-      <Navbar currentView={currentView} onNavigate={setCurrentView} />
+      <Navbar currentView={currentView} onNavigate={navigateTo} />
 
       <main className={currentView === 'home' ? 'flex-1 w-full' : 'flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6'}>
-        {currentView === 'home' && <HomeView onNavigate={setCurrentView} />}
+        {currentView === 'home' && <HomeView onNavigate={navigateTo} />}
 
         {currentView === 'login' && (
           <LoginView
             onSuccess={(role) => {
               if (role === 'waiter') {
-                setCurrentView('waiter');
+                navigateTo('waiter');
               } else if (role === 'kitchen_staff') {
-                setCurrentView('kitchen');
+                navigateTo('kitchen');
               } else {
-                setCurrentView('dashboard');
+                navigateTo('dashboard');
               }
             }}
-            onNavigateRegister={() => setCurrentView('register')}
+            onNavigateRegister={() => navigateTo('register')}
           />
         )}
 
         {currentView === 'register' && (
           <RegisterView
-            onSuccess={() => setCurrentView('dashboard')}
-            onNavigateLogin={() => setCurrentView('login')}
+            onSuccess={() => navigateTo('dashboard')}
+            onNavigateLogin={() => navigateTo('login')}
           />
         )}
 
         {/* Protected View: Dashboard (Owner only) */}
         {currentView === 'dashboard' && user && (
           <DashboardView
-            onNavigateProfile={() => setCurrentView('profile')}
-            onNavigateMenu={() => setCurrentView('menu')}
-            onNavigateTables={() => setCurrentView('tables')}
-            onNavigateOrders={() => setCurrentView('orders')}
-            onNavigateKitchen={() => setCurrentView('kitchen')}
-            onNavigateWaiter={() => setCurrentView('waiter')}
-            onNavigateStaff={() => setCurrentView('staff')}
+            onNavigateProfile={() => navigateTo('profile')}
+            onNavigateMenu={() => navigateTo('menu')}
+            onNavigateTables={() => navigateTo('tables')}
+            onNavigateOrders={() => navigateTo('orders')}
+            onNavigateKitchen={() => navigateTo('kitchen')}
+            onNavigateWaiter={() => navigateTo('waiter')}
+            onNavigateStaff={() => navigateTo('staff')}
           />
         )}
 
         {/* Protected View: Order Management */}
         {currentView === 'orders' && user && (
           <OrdersView
-            onNavigateKitchen={() => setCurrentView('kitchen')}
-            onNavigateTables={() => setCurrentView('tables')}
+            onNavigateKitchen={() => navigateTo('kitchen')}
+            onNavigateTables={() => navigateTo('tables')}
           />
         )}
 
         {/* Protected View: Kitchen Display System (KDS) */}
         {currentView === 'kitchen' && user && (
           <KitchenView
-            onNavigateOrders={() => setCurrentView('orders')}
+            onNavigateOrders={() => navigateTo('orders')}
           />
         )}
 
         {/* Protected View: Waiter Station (Part 7) */}
         {currentView === 'waiter' && user && (
           <WaiterView
-            onNavigateOrders={() => setCurrentView('orders')}
-            onNavigateTables={() => setCurrentView('tables')}
+            onNavigateOrders={() => navigateTo('orders')}
+            onNavigateTables={() => navigateTo('tables')}
           />
         )}
 
@@ -199,7 +205,7 @@ function AppContent() {
 
         {/* Protected View: Restaurant Profile */}
         {currentView === 'profile' && user && (
-          <ProfileView onBackToDashboard={() => setCurrentView('dashboard')} />
+          <ProfileView onBackToDashboard={() => navigateTo('dashboard')} />
         )}
       </main>
 

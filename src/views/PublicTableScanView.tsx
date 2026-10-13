@@ -495,7 +495,7 @@ export const PublicTableScanView: React.FC<PublicTableScanViewProps> = ({
   return (
     <div className="min-h-screen bg-stone-50/60 pb-28 font-sans antialiased text-stone-900">
       {/* Real-Time Live Preparation Timer Banner for Active Table Order */}
-      {activeTableOrder && ['pending', 'preparing', 'ready'].includes(activeTableOrder.status) && (
+      {activeTableOrder && ['pending', 'accepted', 'preparing', 'ready'].includes(activeTableOrder.status) && (
         <div className="sticky top-0 z-40 shadow-xs">
           <LivePrepTimer
             createdAt={activeTableOrder.created_at}

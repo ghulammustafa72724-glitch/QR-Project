@@ -225,7 +225,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5 self-start md:self-auto">
+          <div className="flex flex-nowrap items-center gap-2 self-start md:self-auto">
             {/* Auto Refresh Toggle */}
             <label className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-stone-50 border border-stone-200 text-xs font-medium text-stone-700 cursor-pointer hover:bg-stone-100 transition-colors select-none">
               <input
@@ -254,19 +254,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
               <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-amber-600' : ''}`} />
             </button>
 
-            {/* Kitchen Display Link Button */}
-            <button
-              onClick={onNavigateKitchen}
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-semibold text-xs sm:text-sm shadow-xs transition-colors"
-            >
-              <ChefHat className="w-4 h-4" />
-              <span>Open Kitchen Display</span>
-              {statusCounts.active > 0 && (
-                <span className="ml-1 px-1.5 py-0.2 bg-amber-500 text-white rounded-full text-[10px] font-bold">
-                  {statusCounts.active}
-                </span>
-              )}
-            </button>
+
           </div>
         </div>
       </div>
